@@ -1,0 +1,18 @@
+* {
+    font-family: 'Stylish', sans-serif;
+    width: 300px;
+    margin: 10px auto;
+
+}
+
+.disney {
+    background-image: url(https://file.instiz.net/data/file/20130227/b/1/1/b1113547b061a0c7f56fd344d49925a5);
+    width: 300px;
+    height: 300px;
+    border-radius: 18px;
+    background-size: cover;
+    text-align: center;
+    padding: 20px;
+    color: white;
+
+}
