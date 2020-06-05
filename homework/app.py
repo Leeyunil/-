@@ -8,20 +8,25 @@ db = client.dbsparta                      # 'dbsparta'라는 이름의 db를 만
 def home():
     return render_template('index.html')
 ## API 역할을 하는 부분
-@app.route('/reviews', methods=['POST'])
+@app.route('/orders', methods=['POST'])
 def write_review():
-    title = request.form['title']
-    author = request.form['author']
-    review = request.form['review']
-    db.reviews.insert_one({
-        "title": title,
-        "author": author,
-        "review": review
+    name = request.form['name']
+    colorselection = request.form['colorselection']
+    count = request.form['count']
+    address = request.form['address']
+    pNumber = request.form['pNumber']
+    db.orders.insert_one({
+        "name": name,
+        "colorselection": colorselection,
+        "count": count,
+        "address": address,
+        "pNumber": pNumber
     })
-    return jsonify({'result':'success', 'msg': '이 요청은 POST!'})
-@app.route('/reviews', methods=['GET'])
+    
+    return jsonify({'result':'success', 'msg': '과연'})
+@app.route('/orders', methods=['GET'])
 def read_reviews():
-    reviews = list(db.reviews.find({}, {"_id": False}))
-    return jsonify({'result':'success', 'msg': '이 요청은 GET!', 'reviews': reviews})
+    orders = list(db.orders.find({}, {"_id": False}))
+    return jsonify({'result':'success', 'msg': '이 요청은 GET!', 'orders': orders})
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
