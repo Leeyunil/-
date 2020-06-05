@@ -3,10 +3,15 @@
 
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4주차 숙제 두번째..ㅠㅠ</title>
+    <title>4주차숙제</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <style>
@@ -34,39 +39,42 @@
         .st-wrapper {
             background-color: rgb(199, 221, 250)
         }
-
         .숙제끝 {
-            color: blue
+            color:blue
         }
-
         .table {
-            margin: 0 auto;
+            margin :0 auto;
             width: 80%;
         }
     </style>
     <script>
-
         $(document).ready(function () {
             $('#orders-box').html('');
             listing();
         });
 
-        function make_orders() {
+        function order_please() {
             // 1. 제목, 저자, 리뷰 내용을 가져옵니다.
             // 2. 제목, 저자, 리뷰 중 하나라도 입력하지 않았을 경우 alert를 띄웁니다.
             // 3. POST /reviews 에 저장을 요청합니다.
-            let name = $("#name").val();
-            let colorselection = $("#colorselection").val();
-            let count = $("#count").val();
-            let address = $("#address").val();
-            let pNumber = $("#pNumber").val();
+           let name = $("#name").val();
+           let colorselection = $("#colorselection").val();
+           let count = $("#count").val();
+           let address = $("#address").val();
+           let pNumber = $("#pNumber").val();
             $.ajax({
                 type: 'POST', // 타입을 작성합니다.
                 url: '/orders', // url을 작성합니다.
-                data: { "name": name, "colorselection": colorselection, "count": count, "address": address, "pNumber": pNumber }, // data를 작성합니다. },
+                data: {
+                    "name": name,
+                    "colorselection":colorselection,
+                    "count":count, 
+                    "address":address,
+                    "pNumber":pNumber 
+                  }, // data를 작성합니다. },
                 success: function (response) {
+                    console.log(response)
                     if (response['result'] == 'success') {
-                       
                         window.location.reload();
                     }
                 }
@@ -82,37 +90,37 @@
                 url: "/orders",
                 data: {},
                 success: function (response) {
-                    let num=0
                     if (response['result'] == 'success') {
                         let order = response['orders'];
+                        let num = 0
                         for(let i=0; i<order.length; i++){
-                            let order1 = order[i];
-                            num +=1
-                            $("#ordercheck").append(
-                                `<tr>
-                                    <td>${num}</th>
-                                    <td>${order1['name']}</td>
-                                    <td>${order1['colorselection']}</td>
-                                    <td>${order1['count']}</td>
-                                    <td>${order1['address']}</td>
-                                    <td>${order1['pNumber']}</td>
+                           let orderss = order[i]
+                           
+                           num +=1
+                            $("#ordercheckbox").append(
+                                ` <tr>
+                                    <th scope="row">${num}</th>
+                                    <td>${orderss['name']}</td>
+                                    <td>${orderss['colorselection']}</td>
+                                    <td>${orderss['count']}</td>
+                                    <td>${orderss['address']}</td>
+                                    <td>${orderss['pNumber']}</td>
                                 </tr>`
-                            )
-                        }
-                        
+                                // `<tr>
+                                //     <th scope="col">#</th>
+                                //     <th scope="col">${orderss['name']}</th>
+                                //     <th scope="col">${orderss['colorselection']}</th>
+                                //     <th scope="col">${orderss['count']}</th>
+                                //     <th scope="col">${orderss['address']}</th>
+                                //     <th scope="col">${orderss['pNumber']}</th>
+                                // </tr>`)
+                            )}
+                        // 2. 성공했을 때 리뷰를 올바르게 화면에 나타내기
                     } else {
                         alert('리뷰를 받아오지 못했습니다');
                     }
                 }
             });
-        }
-
-        function is_long(obj) {
-            let content = $(obj).val();
-            if (content.length > 140) {
-                alert('리뷰는 140자까지 기록할 수 있습니다.');
-                $(obj).val(content.substring(0, content.length - 1));
-            }
         }
 
         function submit() {
@@ -123,33 +131,46 @@
             let pNumber = $("#pNumber").val();
             if (name == "") {
                 alert("이름을 입력해주세요...")
-            } else if (colorselection == "--색상을 선택하세요--") {
-                alert("색상을 선택해주세요...")
-            } else if (count == "--수량을 선택하세요--") {
-                alert("수량을 선택해주세요...")
-            } else if (address == "") {
-                alert("주소을 입력해주세요...")
-            } else if (pNumber == "") {
-                alert("전화번호를 입력해주세요...")
-            } else {
-                alert("주문이 완료되었습니다;;;;;")
-                make_orders()
             }
+
+           
+            else if (colorselection == "--색상을 선택하세요--") {
+                alert("색상을 선택해주세요...")
+            }
+
+            
+            else if (count == "--수량을 선택하세요--") {
+                alert("수량을 선택해주세요...")
+            }
+
+            
+            else if (address == "") {
+                alert("주소을 입력해주세요...")
+            }
+
+            
+            else if (pNumber == "") {
+                alert("전화번호를 입력해주세요...")
+            }
+            else {
+                alert("주문이 완료되었습니다....;;")
+                order_please()
+            }
+
         }
         $(document).ready(function () {
             $.ajax({
                 type: "GET",
                 url: "https://api.manana.kr/exchange/rate.json",
-                data: {},
-                success: function (response) {
-                    console.log(response)
+                data: {}, 
+                success: function (response) { 
+                    console.log(response) 
                     let rate = response[1]["rate"]
-                    $("#exchange").append(`달러-원 환율: ${rate}`)
+                    $("#exchange").append(`달러-원 환율: ${ rate}`)
                 }
             })
 
         });
-
     </script>
 </head>
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&display=swap" rel="stylesheet">
@@ -169,7 +190,7 @@
             <p id="exchange" class="숙제끝"></p>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">주문자 이름</span>
+                    <span class="input-group-text" id="basic-addon1">주문자 성함</span>
                 </div>
                 <input id="name" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
             </div>
@@ -210,44 +231,45 @@
                     aria-describedby="basic-addon1">
             </div>
             <div class="order">
-                <button onclick="submit()" type="button" class="btn btn-primary">주문하기</button>
+                <button onclick=submit() type="button" class="btn btn-primary">주문하기</button>
             </div>
-            <h1> </h1>
+            <h1>  </h1>
+            
         </div>
         <table class="table">
             <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">이름</th>
-                    <th scope="col">색상</th>
-                    <th scope="col">수량</th>
-                    <th scope="col">주소</th>
-                    <th scope="col">전화번호</th>
-                </tr>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">성함</th>
+                <th scope="col">색상</th>
+                <th scope="col">수량</th>
+                <th scope="col">주소</th>
+                <th scope="col">전화번호</th>
+              </tr>
             </thead>
-            <tbody id="ordercheck">
-                <!-- <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Larry</td>
-                    <td>the Bird</td>
-                    <td>@twitter</td>
-                </tr> -->
+            <tbody id = ordercheckbox>
+              <!-- <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+              </tr>
+              <tr>
+                <th scope="row">3</th>
+                <td>Larry</td>
+                <td>the Bird</td>
+                <td>@twitter</td>
+              </tr> -->
             </tbody>
-        </table>
+          </table>
     </div>
 </body>
 
