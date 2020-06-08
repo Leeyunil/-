@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2주차 숙제</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <style>
+        .wrapper {
+            width: 750px;
+            margin: 0 auto;
+            font-family: 'Nanum Gothic Coding', monospace;
+        }
+
+        .stop {
+            width: 700px;
+            height: 500px;
+            margin: 0 auto;
+            padding: 0px 0px 0px 60px;
+        }
+
+        .price-color {
+            color: orangered
+        }
+
+        .order {
+            text-align: center;
+        }
+
+        .st-wrapper {
+            background-color: rgb(199, 221, 250)
+        }
+        .숙제끝 {
+            color:blue
+        }
+        .table {
+            margin:0 auto;
+            width:80%;
+        }
+    </style>
+    <script>
+         $(document).ready(function () {
+            $('#orders-box').html('');
+            listing();
+        });
+
+        function make_order() {
+            let name = $("#name").val();
+            let colorselection = $("#colorselection").val();
+            let count = $("#count").val();
+            let address = $("#address").val();
+            let pNumber = $("#pNumber").val();
+            $.ajax({
+                type: 'POST', 
+                url: '/orders', 
+                data: {
+                    'name_give':name,
+                    'colorselection_give':colorselection,
+                    'count_give':count,
+                    'address_give':address,
+                    'pNumber_give':pNumber
+                }, 
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+
+        function listing() {
+            
+            $.ajax({
+                type: "GET",
+                url: "/orders",
+                data: {},
+                success: function (response) {
+                    let num = 0
+                    if (response['result'] == 'success') {
+                       let order1 = response['orders'];
+                       for(let i=0; i< order1.length; i++) {
+                        let order = order1[i];
+                        num +=1;
+                        $("#ordercheck").append(
+                            `<tr>
+                                <th scope="row">${num}</th>
+                                <td>${order['name']}</td>
+                                <td>${order['colorselection']}</td>
+                                <td>${order['count']}</td>
+                                <td>${order['address']}</td>
+                                <td>${order['pNumber']}</td>
+                            </tr>`
+                        )
+                       }
+                    } else {
+                        alert('리뷰를 받아오지 못했습니다');
+                    }
+                }
+            });
+        }
+
+
+        function submit() {
+            let name = $("#name").val();
+            let colorselection = $("#colorselection").val();
+            let count = $("#count").val();
+            let address = $("#address").val();
+            let pNumber = $("#pNumber").val();
+            if (name == "") {
+                alert("이름을 입력해주세요...")
+            } else if (colorselection == "--색상을 선택하세요--") {
+                alert("색상을 선택해주세요...")
+            } else if (count == "--수량을 선택하세요--") {
+                alert("수량을 선택해주세요...")
+            } else if (address == "") {
+                alert("주소을 입력해주세요...")
+            } else if (pNumber == "") {
+                alert("전화번호를 입력해주세요...")
+            } else {
+                alert("주문이 완료되었습니다.")
+                make_order();
+            }
+        }
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "https://api.manana.kr/exchange/rate.json",
+                data: {}, 
+                success: function (response) { 
+                    console.log(response) 
+                    let rate = response[1]["rate"]
+                    $("#exchange").append(`달러-원 환율: ${ rate}`)
+                }
+            })
+
+        });
+
+    </script>
+</head>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&display=swap" rel="stylesheet">
+
+
+<body>
+    <div class="st-wrapper">
+        <div class="wrapper">
+            <img class="stop" src="https://img4.tmon.kr/cdn2/deals/2019/01/03/1735800374/front_af30f_e7ces.jpg">
+            <div>
+                <h3 style="font-size: 35px; display: inline-block; ">플라잉디스크 원반놀이 /</h3>
+                <h3 style="font-size: 20px; display: inline-block;">판매가격 :</h3>
+                <h3 style="font-size: 27px; display: inline-block;">4800원 /</h3>
+                <h3 class="price-color" style="font-size: 20px; display: inline-block;">균일가</h3>
+            </div>
+            <p>두툼한 쿠션감과 충격 흡수가 좋아 맞아도 아프지 않고, 아주 잘 날아가 우주까지 날아갈 수 있으니 조심해 주세요~ </p>
+            <p id="exchange" class="숙제끝"></p>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">주문자 성함</span>
+                </div>
+                <input id="name" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="inputGroupSelect01">색상선택</label>
+                </div>
+                <select id="colorselection" class="custom-select" id="inputGroupSelect01">
+                    <option selected>--색상을 선택하세요--</option>
+                    <option value="yellow">yellow</option>
+                    <option value="green">green</option>
+                    <option value="orange">orange</option>
+                </select>
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="inputGroupSelect01">수량</label>
+                </div>
+                <select id="count" class="custom-select" id="inputGroupSelect01">
+                    <option selected>--수량을 선택하세요--</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">주소</span>
+                </div>
+                <input id="address" type="text" class="form-control" aria-label="Username"
+                    aria-describedby="basic-addon1">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">전화번호</span>
+                </div>
+                <input id="pNumber" type="text" class="form-control" aria-label="Username"
+                    aria-describedby="basic-addon1">
+            </div>
+            <div class="order">
+                <button onclick="submit()" type="button" class="btn btn-primary">주문하기</button>
+            </div>
+            <h1> </h1>
+        </div>
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">이름</th>
+                <th scope="col">색상</th>
+                <th scope="col">수량</th>
+                <th scope="col">주소</th>
+                <th scope="col">전화번호</th>
+              </tr>
+            </thead>
+            <tbody id="ordercheck">
+              <!-- <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+                <td>Mark</td>
+                <td>Otto</td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+              </tr>
+              <tr>
+                <th scope="row">3</th>
+                <td>Larry</td>
+                <td>the Bird</td>
+                <td>@twitter</td>
+              </tr> -->
+            </tbody>
+          </table>
+    </div>
+</body>
+
+</html>
